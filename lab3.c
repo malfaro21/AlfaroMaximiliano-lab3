@@ -18,9 +18,14 @@ int** read_board_from_file(char* filename){
         fclose(fp);
         return NULL;
     }
-    for(int row = 0; row<ROW_SIZE; row++)[
+    for(int row = 0; row<ROW_SIZE; row++){
         board[row] = (int*)malloc(sizeof(int)* COL_SIZE);
-    ]
+
+        if(board[row] == NULL){
+            fclose(fp);
+
+        }
+    }
 
     return board;
 }
