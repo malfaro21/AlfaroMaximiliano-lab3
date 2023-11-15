@@ -20,13 +20,11 @@ int** read_board_from_file(char* filename){
     }
     for(int row = 0; row<ROW_SIZE; row++){
         board[row] = (int*)malloc(sizeof(int)* COL_SIZE);
-
-        if(board[row] == NULL){
-            fclose(fp);
-
+        for(int col = 0; col<COL_SIZE; col++){
+            fscanf(fp, "%d", &board[row][col]);
         }
     }
-
+    fclose(fp);
     return board;
 }
 
