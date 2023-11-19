@@ -52,9 +52,21 @@ void* validate_row(void* param){
 }
 void* validate_column(void* param){
     param_struct* params = (param_struct*)param;
-    int start_row = params->starting_row;
-    int end_row = params->ending_row;
+    int start_col = params->starting_row;
+    int end_col= params->ending_row;
     int result = 1;
+    for(int row = params->starting_row; row <= params -> ending_row; row++){
+        for(int other_row = row + 1; other_row <= params -> ending_row; other_row++){
+            if(sudoku_board[row][start_col] == sudoku_board[other_row][start_col]){
+
+            }
+        }if(result == 0){
+            break;
+        }
+
+    }
+    worker_validation[params->id] = result;
+    pthread_exit(NULL);
 }
 
 
