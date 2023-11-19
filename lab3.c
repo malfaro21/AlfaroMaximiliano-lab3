@@ -70,34 +70,40 @@ void* validate_column(void* param){
     worker_validation[params->id] = result;
     pthread_exit(NULL);
 }
-void* validate_subgrid(void* param){
+void* validate_subgrid(void* param) {
     param_struct* params = (param_struct*)param;
-    int result =1;
-     for(int row = params->starting_row; row <= params -> ending_row; row++){
-        for (int col = params->starting_col; col <= params->ending_col; col++){
-            for (int other_row = params->starting_row; other_row <= params->ending_row; other_row++){
-                 for (int other_col = params->starting_col; other_col <= params->ending_col; other_col++){
-                    if(row != other_row || col != other_col){
-                        if(sudoku_board[row][col] == sudoku_board[other_row][other_col]){
+    printf("Thread %d validating subgrid...\n", params->id);
+
+    int result = 1;
+
+    int subgrid_row = params->id / 3;
+    int subgrid_col = params->id % 3; 
+
+    for (int row = params->starting_row; row <= params->ending_row; row++) {
+        for (int col = params->starting_col; col <= params->ending_col; col++) {
+            for (int other_row = params->starting_row; other_row <= params->ending_row; other_row++) {
+                for (int other_col = params->starting_col; other_col <= params->ending_col; other_col++) {
+                    if (row != other_row || col != other_col) {
+                        if (sudoku_board[row][col] == sudoku_board[other_row][other_col]) {
                             result = 0;
                             break;
                         }
                     }
-                 }
-                 if(result == 0){
-                break;    
-                 }
+                }
+                if (result == 0) {
+                    break;
+                }
             }
-            if(result == 0){
+            if (result == 0) {
                 break;
             }
         }
-        if(result == 0){
+        if (result == 0) {
             break;
         }
-     }
-     worker_validation[params->id] = result;
-     pthread_exit(NULL);
+    }
+    worker_validation[params->id] = result;
+    pthread_exit(NULL);
 }
 int is_board_valid(){
     pthread_t* tid = (pthread_t*)malloc(sizeof(pthread_t) * NUM_OF_THREADS);
@@ -105,12 +111,12 @@ int is_board_valid(){
     param_struct* params = (param_struct*)malloc(sizeof(param_struct) * NUM_OF_THREADS);
     worker_validation = (int*)malloc(sizeof(int) * NUM_OF_THREADS);
 
-    for(int i = 0; i < NUM_OF_THREADS; i++){
+    for (int i = 0; i < NUM_OF_THREADS; i++) {
         worker_validation[i] = -1;
     }
 
     pthread_attr_init(&attr);
-    for(int i = 0; i<ROW_SIZE; i++){
+    for (int i = 0; i < ROW_SIZE; i++) {
         params[i].id = i;
         params[i].starting_row = i;
         params[i].starting_col = 0;
@@ -119,7 +125,7 @@ int is_board_valid(){
         pthread_create(&tid[i], &attr, validate_row, &params[i]);
     }
 
-    for(int i = 0; i<COL_SIZE; i++){
+    for (int i = 0; i < COL_SIZE; i++) {
         params[i + ROW_SIZE].id = i + ROW_SIZE;
         params[i + ROW_SIZE].starting_row = 0;
         params[i + ROW_SIZE].starting_col = i;
@@ -128,7 +134,7 @@ int is_board_valid(){
         pthread_create(&tid[i + ROW_SIZE], &attr, validate_column, &params[i + ROW_SIZE]);
     }
 
-    for(int i = 0; i < NUM_OF_SUBGRIDS; i++){
+    for (int i = 0; i < NUM_OF_SUBGRIDS; i++) {
         int subgrid_row = i / 3;
         int subgrid_col = i % 3;
         params[i + ROW_SIZE + COL_SIZE].id = i + ROW_SIZE + COL_SIZE;
@@ -139,17 +145,14 @@ int is_board_valid(){
         pthread_create(&tid[i + ROW_SIZE + COL_SIZE], &attr, validate_subgrid, &params[i + ROW_SIZE + COL_SIZE]);
     }
 
-    for(int i = 0; i<ROW_SIZE; i++){
+    for (int i = 0; i < NUM_OF_THREADS; i++) {
         pthread_join(tid[i], NULL);
     }
 
-    for(int i = 0; i<COL_SIZE; i++){
-        pthread_join(tid[i + ROW_SIZE], NULL);
+    for (int i = 0; i < NUM_OF_THREADS; i++) {
+        if (worker_validation[i] == 0) {
+            return 0; 
+        }
     }
-
-    for(int i = 0; i<NUM_OF_SUBGRIDS; i++){
-        pthread_join(tid[i + ROW_SIZE + COL_SIZE], NULL);
-    }
-
-    int board_valid = 1;
+    return 1;
 }
