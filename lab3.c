@@ -127,8 +127,8 @@ int is_board_valid(){
     }
 
     for(int i = 0; i < NUM_OF_SUBGRIDS; i++){
-        int subgrid_row = 1 / 3;
-        int subgrid_col = 1 % 3;
+        int subgrid_row = i / 3;
+        int subgrid_col = i % 3;
         params[i + ROW_SIZE + COL_SIZE].id = i + ROW_SIZE + COL_SIZE;
         params[i + ROW_SIZE + COL_SIZE].starting_row = subgrid_row * 3;
         params[i + ROW_SIZE + COL_SIZE].starting_col = subgrid_col * 3;
@@ -149,5 +149,5 @@ int is_board_valid(){
         pthread_join(tid[i + ROW_SIZE + COL_SIZE], NULL);
     }
 
-    int board_valid;
+    int board_valid = 1;
 }
