@@ -145,4 +145,9 @@ int is_board_valid(){
         pthread_join(tid[i + ROW_SIZE], NULL);
     }
 
+    for(int i = 0; i<NUM_OF_SUBGRIDS; i++){
+        pthread_join(tid[i + ROW_SIZE + COL_SIZE], NULL);
+    }
+
+    int board_valid;
 }
