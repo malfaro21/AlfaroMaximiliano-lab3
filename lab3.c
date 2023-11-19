@@ -50,6 +50,12 @@ void* validate_row(void* param){
     worker_validation[params->id] = result;
     pthread_exit(NULL);
 }
+void* validate_column(void* param){
+    param_struct* params = (param_struct*)param;
+    int start_row = params->starting_row;
+    int end_row = params->ending_row;
+    int result = 1;
+}
 
 
 int is_board_valid(){
