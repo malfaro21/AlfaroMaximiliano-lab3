@@ -140,5 +140,9 @@ int is_board_valid(){
     for(int i = 0; i<ROW_SIZE; i++){
         pthread_join(tid[i], NULL);
     }
-    
+
+    for(int i = 0; i<COL_SIZE; i++){
+        pthread_join(tid[i + ROW_SIZE], NULL);
+    }
+
 }
