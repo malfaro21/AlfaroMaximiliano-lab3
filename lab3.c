@@ -98,10 +98,16 @@ void* validate_subgrid(void* param){
      pthread_exit(NULL);
 }
 int is_board_valid(){
-    pthread_t* tid;  /* the thread identifiers */
+    pthread_t* tid = (pthread_t*)malloc(sizeof(pthread_t) * NUM_OF_THREADS);
     pthread_attr_t attr;
-    param_struct* parameter;
-    
-    // replace this comment with your code
-    
+    param_struct* params = (param_struct*)malloc(sizeof(param_struct) * NUM_OF_THREADS);
+    worker_validation = (int*)malloc(sizeof(int) * NUM_OF_THREADS);
+
+    for(int i = 0; i < NUM_OF_THREADS; i++){
+        worker_validation[i] = -1;
+    }
+
+    pthread_attr_init(&attr);
+
+
 }
