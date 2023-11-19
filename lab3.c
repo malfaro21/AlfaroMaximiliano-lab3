@@ -5,6 +5,9 @@
 
 extern int** sudoku_board;
 int* worker_validation;
+void* validate_row(void* param);
+void* validate_column(void* param);
+void* validate_subgrid(void* param);
 
 int** read_board_from_file(char* filename){
     FILE *fp = fopen(filename, "r");
@@ -26,6 +29,26 @@ int** read_board_from_file(char* filename){
     }
     fclose(fp);
     return board;
+}
+
+void* validate_row(void* param){
+    param_struct* params = (param_struct*) param;
+    int start_row = params->starting_row;
+    int end_row = params->ending_row;
+    int result = 1;
+    for(int col = params-> starting_col; col <= params->ending_col; col++){
+        for(int other_col = col + 1; other_col<=params->ending_col;other_col++){
+            if(sudoku_board[start_row][col] == sudoku_board[start_row][other_col]){
+                result = 0;
+                break;
+            }
+        }
+        if(result == 0){
+            break;
+        }
+    }
+    worker_validation[params->id] = result;
+    pthread_exit(NULL);
 }
 
 
