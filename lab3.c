@@ -125,4 +125,15 @@ int is_board_valid(){
         params[i + ROW_SIZE].ending_col = i;
         pthread_create(&tid[i + ROW_SIZE], &attr, validate_column, &params[i + ROW_SIZE]);
     }
+
+    for(int i = 0; i < NUM_OF_SUBGRIDS; i++){
+        int subgrid_row = 1 / 3;
+        int subgrid_col = 1 % 3;
+        params[i + ROW_SIZE + COL_SIZE].id = i + ROW_SIZE + COL_SIZE;
+        params[i + ROW_SIZE + COL_SIZE].starting_row = subgrid_row * 3;
+        params[i + ROW_SIZE + COL_SIZE].starting_col = subgrid_col * 3;
+        params[i + ROW_SIZE + COL_SIZE].ending_row = (subgrid_row + 1) * 3 - 1;
+        params[i + ROW_SIZE + COL_SIZE].ending_col = (subgrid_col + 1) * 3 - 1;
+        pthread_create(&tid[i + ROW_SIZE + COL_SIZE], &attr, validate_subgrid, &params[i + ROW_SIZE + COL_SIZE]);
+    }
 }
