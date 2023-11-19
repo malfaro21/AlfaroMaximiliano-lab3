@@ -108,6 +108,12 @@ int is_board_valid(){
     }
 
     pthread_attr_init(&attr);
-
-
+    for(int i = 0; i<ROW_SIZE; i++){
+        params[i].id = i;
+        params[i].starting_row = i;
+        params[i].starting_col = 0;
+        params[i].ending_row = i;
+        params[i].ending_col = COL_SIZE - 1;
+        pthread_create(&tid[i], &attr, validate_row, &params[i]);
+    }
 }
