@@ -136,4 +136,9 @@ int is_board_valid(){
         params[i + ROW_SIZE + COL_SIZE].ending_col = (subgrid_col + 1) * 3 - 1;
         pthread_create(&tid[i + ROW_SIZE + COL_SIZE], &attr, validate_subgrid, &params[i + ROW_SIZE + COL_SIZE]);
     }
+
+    for(int i = 0; i<ROW_SIZE; i++){
+        pthread_join(tid[i], NULL);
+    }
+    
 }
