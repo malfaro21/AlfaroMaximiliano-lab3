@@ -149,6 +149,14 @@ int is_board_valid() {
         pthread_join(tid[i + ROW_SIZE + COL_SIZE], NULL);
     }
     int board_valid = 1;
+    for(int j = 0; j <ROW_SIZE; j++){
+        pthread_join(tid[j], NULL);
+        if(worker_validation[j] == 0){
+            board_valid = 0;
+            break;
+        }
+
+    }
     free(worker_validation);
     return board_valid; 
 }
